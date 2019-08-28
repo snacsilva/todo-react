@@ -3,8 +3,20 @@ import Card from 'react-bootstrap/Card'
 import Table from 'react-bootstrap/Table'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import api from '../../services/api'
 
 export default function List (props) {
+
+  async function checkTask(task) {
+    await api.put(`/tasks/${task.id}`, { done: true })
+  }
+
+  async function deleteTask(task) {
+    if (window.confirm(`Are you sure you want to delete: "${task.title}"`)) {
+      await api.delete(`/tasks/${task.id}`, {method: 'DELETE'});
+    }
+  }
+
   return (
     <div>
       <Card>
@@ -15,14 +27,14 @@ export default function List (props) {
                    return <tr key={task.id}>
                      <td className="col-md-10">{task.title}</td>
                      <td>
-                       {task.done == false
-                         ? <a className="check" href="#">
+                       {task.done === false
+                         ? <a className="check" href="#" onClick={() => checkTask(task)}>
                              <FontAwesomeIcon icon="check-circle"/>
                            </a> : null
                        }
                      </td>
                      <td>
-                       <a className="delete" href="#">
+                        <a className="delete" href="#" onClick={() => deleteTask(task)}>
                          <FontAwesomeIcon icon="trash-alt"/>
                        </a>
                      </td>
